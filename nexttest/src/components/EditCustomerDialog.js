@@ -1,4 +1,5 @@
-import * as React from 'react';
+"use client"
+import React,{useState} from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -8,6 +9,11 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import { CssBaseline } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { fetchUsers, addUser, deleteUser, updateUser } from '@/redux/slice/Users';
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -19,51 +25,77 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 export default function EditCustomerDialog(props) {
-  const {openEditDialog,handleClickOpenEditDialog,handleClickCloseEditDialog} = props
-  
+  const { openEditDialog, handleClickOpenEditDialog, handleClickCloseEditDialog } = props
+  const dispatch = useDispatch()
+
+  const [customerData, setCustomerData] = useState({})
+
+
+  const getCustomer = (value, name) => {
+    const newCustomer = { [name]: value }
+    setCustomerData({ ...customerData, ...newCustomer })
+  }
+
+  const handleEditCustomer = () => {
+    dispatch(updateUser(customerData))
+    console.log("customer data",customerData)
+  }
+
   return (
     <React.Fragment>
       <BootstrapDialog
         onClose={handleClickCloseEditDialog}
         aria-labelledby="customized-dialog-title"
         open={openEditDialog}
+        PaperProps={{
+          sx: {
+            borderRadius: '20px',
+            width: "25rem",
+            height: "25rem",
+            backgroundColor: '#FBFCFC'
+          },
+        }}
+
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Edit title
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClickCloseEditDialog}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+        <div
+          style={{
+            background: 'linear-gradient(90deg, rgba(66,161,125,1) 0%, rgba(40,127,101,1) 22%, rgba(7,83,70,1) 41%)',
+            height: '6rem'
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
+          <Typography variant='h5' style={{ display: "flex", justifyContent: 'center', position: "relative", top: 50, color: 'white' }}>
+            Edit Customer
           </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-            magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-            ullamcorper nulla non metus auctor fringilla.
-          </Typography>
+          <IconButton
+            aria-label="close"
+            onClick={handleClickCloseEditDialog}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: "white"
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+        </div>
+
+        <DialogContent  >
+          <div style={{ display: 'flex', flexDirection: 'column', marginTop: '20px', gap: '20px', justifyContent: 'space-between', alignItems: "space-between" }}>
+            <TextField name="name" onChange={(e) => { getCustomer(e.target.value, e.target.name) }} size="small" id="outlined-basic" label="Customer Name" variant="outlined" />
+            <TextField name="email" onChange={(e) => { getCustomer(e.target.value, e.target.name) }} size="small" id="outlined-basic" label="Email" variant="outlined" />
+
+            <label htmlFor="avatar" style={{ cursor: 'pointer', textDecoration: 'underline', margin: '8px 0', color: '#80CCAB' }}>
+              Upload Photo
+            </label>
+            <input style={{ display: 'none' }} type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" />
+
+            <Button onClick={()=>{handleEditCustomer();handleClickCloseEditDialog()}} style={{ color: 'white', background: 'linear-gradient(90deg, rgba(66,161,125,1) 0%, rgba(40,127,101,1) 22%, rgba(7,83,70,1) 41%)' }}>
+              Edit Customer
+            </Button>
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClickCloseEditDialog}>
-            Save changes
-          </Button>
-        </DialogActions>
       </BootstrapDialog>
     </React.Fragment>
   );

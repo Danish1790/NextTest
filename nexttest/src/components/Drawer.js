@@ -1,5 +1,5 @@
 "use client"
-import * as React from 'react';
+import React,{useEffect} from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -23,6 +23,8 @@ import Image from 'next/image';
 import ProjectNameImage from "../../public/appname.PNG"
 import Link from 'next/link';
 import Content from './Content';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsers, addUser, deleteUser, updateUser } from '@/redux/slice/Users';
 
 const drawerWidth = 240;
 
@@ -34,9 +36,18 @@ function ResponsiveDrawer(props) {
         setMobileOpen(!mobileOpen);
     };
 
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(fetchUsers())
+    }, [])
+
+    const customers = useSelector((data) => data.userData.users)
+    console.log("customers", customers)
+
     const drawer = (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#015249', height: '100%', borderRadius: '0 12px 12px 0' }}>
-            <Image style={{ marginTop: '15px' }} src={ProjectNameImage} />
+            <Image alt="project name" style={{ marginTop: '15px' }} src={ProjectNameImage} />
             <Link href="/" style={{ textDecoration: "none" }}>
                 <Button variant="contained"
                     style={{ marginTop: '5rem', display: 'flex', width: '10rem', justifyContent: 'space-between', backgroundColor: '#043933', color: 'white' }}
@@ -61,7 +72,7 @@ function ResponsiveDrawer(props) {
                     ml: { sm: `${drawerWidth}px` },
                     backgroundColor: 'white',
                     color: 'black',
-                    boxShadow: 1,
+                    boxShadow: 0,
                     height: '5rem',
 
                 }}
@@ -118,7 +129,7 @@ function ResponsiveDrawer(props) {
             {/* content */}
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, backgroundColor: 'red' }}
+                sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` }, backgroundColor: '#F3F3F3' }}
             >
                 <Toolbar />
 

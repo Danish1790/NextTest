@@ -2,12 +2,15 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
+import { fetchUsers,addUser,deleteUser,updateUser } from '@/redux/slice/Users';
+import { useDispatch } from 'react-redux';
+
+
+
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -19,8 +22,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 export default function DeleteCustomerDialog(props) {
-  const {openDeleteDialog,handleClickOpenDeleteDialog,handleClickCloseDeleteDialog} = props
-  
+  const { openDeleteDialog, handleClickOpenDeleteDialog, handleClickCloseDeleteDialog,customerId } = props
+
+  const dispatch = useDispatch()
+
+  const handleDeleteCustomer = () =>{
+    dispatch(deleteUser({id:customerId}))
+  }
 
   return (
     <React.Fragment>
@@ -28,10 +36,15 @@ export default function DeleteCustomerDialog(props) {
         onClose={handleClickCloseDeleteDialog}
         aria-labelledby="customized-dialog-title"
         open={openDeleteDialog}
+        PaperProps={{
+          sx: {
+            borderRadius: '20px',
+            width: "25rem",
+            height: "25rem",
+            backgroundColor: '#FBFCFC'
+          },
+        }}
       >
-        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-         Add Dialog
-        </DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleClickCloseDeleteDialog}
@@ -39,32 +52,21 @@ export default function DeleteCustomerDialog(props) {
             position: 'absolute',
             right: 8,
             top: 8,
-            color: (theme) => theme.palette.grey[500],
+            color: "black"
           }}
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>
-          <Typography gutterBottom>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </Typography>
-          <Typography gutterBottom>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
-          </Typography>
-          <Typography gutterBottom>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-            magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-            ullamcorper nulla non metus auctor fringilla.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClickCloseDeleteDialog}>
-            Save changes
-          </Button>
-        </DialogActions>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', justifyContent: 'center', alignItems: 'center' }}>
+          <DeleteForeverOutlinedIcon style={{ fontSize: '8rem', color: 'red' }} />
+          <Typography variant='h5' fontWeight="bold">Are you sure?</Typography>
+          <Typography variant='body' >Do you really want to delete this customer?</Typography>
+          <Typography variant='body' sx={{ lineHeight: 0 }}>This process cannot be undone.</Typography>
+          <div style={{ display: 'flex', flexDirection: 'row', width: '100%', gap: '20px', justifyContent: 'space-evenly', marginTop: '30px' }}>
+            <Button onClick={handleClickCloseDeleteDialog} variant='contained' style={{ backgroundColor: '#A5A5AF', color: 'white', width: '8rem' }}>Cancel</Button>
+            <Button onClick={()=>{handleDeleteCustomer();handleClickCloseDeleteDialog()}} variant='contained' style={{ backgroundColor: 'red', color: 'white', width: '8rem' }}>Delete</Button>
+          </div>
+        </div>
       </BootstrapDialog>
     </React.Fragment>
   );
